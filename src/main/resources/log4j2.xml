@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- auto re-config in 30 seconds -->
+<Configuration status="WARN" monitorInterval="30">
+	<Properties>
+		<Property name="filename">logs/test.log</Property>
+	</Properties>
+
+	<Appenders>
+		<Console name="Console" target="SYSTEM_OUT">
+			<PatternLayout pattern="[%-5p] [%t] [%d{yyyy-MM-dd HH:mm:ss,SSS}] %m [%l]%n" />
+		</Console>
+		<File name="File" fileName="${filename}">
+			<PatternLayout>
+				<pattern>%d %p %C{1.} [%t] %m%n</pattern>
+			</PatternLayout>
+		</File>
+		<!-- this filePattern will separate files by minutes, the %i parameter 
+			will be used when SizeBasedTriggeringPolicy is configured. File will be auto 
+			compressed if the filePattern ends will .gz or .zip -->
+		<RollingFile name="RollingFile" fileName="logs/app.log"
+			filePattern="logs/$${date:yyyy-MM}/app-%d{MM-dd-yyyy-HH-mm}-%i.log.gz">
+			<PatternLayout>
+				<Pattern>%d %p %c{1.} [%t] %m%n</Pattern>
+			</PatternLayout>
+			<Policies>
+				<!-- if do not set interval, will use file name pattern to separate files -->
+				<!-- <TimeBasedTriggeringPolicy interval="6" modulate="true" /> -->
+				<TimeBasedTriggeringPolicy />
+
+				<!-- <SizeBasedTriggeringPolicy size="250 MB" /> -->
+			</Policies>
+			<!-- SizeBasedTriggeringPolicy use default DefaultRolloverStrategy and 
+				have up to 7 separate files per TimeBasedTriggeringPolicy time unit -->
+			<!-- <DefaultRolloverStrategy max="10" /> -->
+		</RollingFile>
+	</Appenders>
+
+	<Loggers>
+
+		<!-- <Logger name="log4jTest.pkgtest" level="debug" additivity="false"> 
+			<AppenderRef ref="Console" /> </Logger> -->
+
+		<Logger name="log4jTest.pkgtest" level="debug" />
+
+
+		<Root level="info">
+			<AppenderRef ref="Console" />
+			<AppenderRef ref="File" />
+			<AppenderRef ref="RollingFile" />
+		</Root>
+	</Loggers>
+</Configuration>
